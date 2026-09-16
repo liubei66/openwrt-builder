@@ -30,9 +30,6 @@ git clone https://github.com/openwrt/packages.git tmp/openwrt-packages --depth=1
 cp -r tmp/openwrt-packages/libs/libffi feeds/packages/libs/
 rm -rf tmp/openwrt-packages
 
-sed -i '/CONFIG_PACKAGE_luci-i18n-clientstatus-zh-cn/d' .config
-sed -i '/CONFIG_PACKAGE_luci-app-clientstatus/d' .config
-sed -i '/CONFIG_PACKAGE_mihomo-alpha/d' .config
 
 [ -f package/feeds/luci/luci-app-ksmbd/root/usr/share/luci/menu.d/luci-app-ksmbd.json ] && sed -i 's#admin/services/ksmbd#admin/nas/ksmbd#g' ./package/feeds/luci/luci-app-ksmbd/root/usr/share/luci/menu.d/luci-app-ksmbd.json
 

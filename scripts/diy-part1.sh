@@ -13,7 +13,16 @@ rm -rf package/lucky \
        package/feeds/luci/applications/{luci-app-adguardhome,luci-app-passwall,luci-app-passwall2,luci-app-openclash,luci-app-homeproxy,luci-app-lucky,luci-app-smartdns,luci-app-timecontrol,luci-app-mosdns,luci-app-nikki,luci-app-momo,luci-app-daed,luci-app-dae,luci-theme-argon}
 
 
+
 # ===== 拉自定义包 =====
+
+
+if [ "$ARCHITECTURE" = "xr1710g" ]; then
+    rm -rf package/luci-app-airoha-npu
+    cp -a "$GITHUB_WORKSPACE/apps/luci-app-airoha-npu" package/luci-app-airoha-npu
+fi
+
+
 
 mkdir package/small
 pushd package/small

@@ -4,6 +4,9 @@ msgstr "Content-Type: text/plain; charset=UTF-8\n"
 msgid "Airoha FlowSense"
 msgstr ""
 
+msgid "AP Mode Acceleration"
+msgstr ""
+
 msgid "Disabled"
 msgstr ""
 
@@ -25,7 +28,13 @@ msgstr ""
 msgid "Original"
 msgstr ""
 
+msgid "Pause"
+msgstr ""
+
 msgid "PPPoE Offload"
+msgstr ""
+
+msgid "Resume"
 msgstr ""
 
 msgid "State"
