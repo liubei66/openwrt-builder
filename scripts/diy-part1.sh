@@ -18,8 +18,9 @@ rm -rf package/lucky \
 
 
 if [ "$ARCHITECTURE" = "xr1710g" ]; then
-    rm -rf package/luci-app-airoha-npu
-    cp -a "$GITHUB_WORKSPACE/apps/luci-app-airoha-npu" package/luci-app-airoha-npu
+    echo ''
+    #rm -rf package/luci-app-airoha-npu
+    #cp -a "$GITHUB_WORKSPACE/apps/luci-app-airoha-npu" package/luci-app-airoha-npu
 fi
 
 
