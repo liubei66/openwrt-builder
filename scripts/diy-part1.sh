@@ -10,7 +10,7 @@ rm -rf package/lucky \
        package/feeds/luci/luci-mod-system \
        feeds/luci/luci-theme-argon \
        package/feeds/packages/net/{geoview,chinadns-ng,hysteria,mosdns,v2ray-geodata,lucky,shadowsocks-libev,shadowsocks-rust,shadowsocksr-libev,sing-box,v2ray-plugin,xray-core,smartdns,dae,daed} \
-       package/feeds/luci/applications/{luci-app-adguardhome,luci-app-passwall,luci-app-passwall2,luci-app-openclash,luci-app-homeproxy,luci-app-lucky,luci-app-smartdns,luci-app-timecontrol,luci-app-mosdns,luci-app-nikki,luci-app-momo,luci-app-daed,luci-app-dae,luci-theme-argon}
+       package/feeds/luci/applications/{luci-app-passwall,luci-app-passwall2,luci-app-openclash,luci-app-homeproxy,luci-app-lucky,luci-app-smartdns,luci-app-timecontrol,luci-app-mosdns,luci-app-nikki,luci-app-momo,luci-app-daed,luci-app-dae,luci-theme-argon}
 
 
 
@@ -28,7 +28,7 @@ fi
 mkdir package/small
 pushd package/small
 
-git clone https://github.com/kenzok78/luci-app-adguardhome.git
+#git clone https://github.com/kenzok78/luci-app-adguardhome.git
 git clone https://github.com/sirpdboy/luci-app-timecontrol.git
 git clone https://github.com/sirpdboy/luci-app-taskplan.git
 git clone https://github.com/nikkinikki-org/OpenWrt-nikki.git
