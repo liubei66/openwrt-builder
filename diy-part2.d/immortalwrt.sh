@@ -31,7 +31,9 @@ cp -r tmp/openwrt-packages/libs/libffi feeds/packages/libs/
 rm -rf tmp/openwrt-packages
 
 
-[ -f package/feeds/luci/luci-app-ksmbd/root/usr/share/luci/menu.d/luci-app-ksmbd.json ] && sed -i 's#admin/services/ksmbd#admin/nas/ksmbd#g' ./package/feeds/luci/luci-app-ksmbd/root/usr/share/luci/menu.d/luci-app-ksmbd.json
+[ -f package/feeds/luci/luci-app-ksmbd/root/usr/share/luci/menu.d/luci-app-ksmbd.json ] && sed -i 's#admin/services/ksmbd#admin/nas/ksmbd#g' package/feeds/luci/luci-app-ksmbd/root/usr/share/luci/menu.d/luci-app-ksmbd.json
+
+[ -f package/small/luci-app-taskplan/luci-app-taskplan/root/usr/share/luci/menu.d/luci-app-taskplan.json ] && sed -i 's#admin/control#admin/services#g' package/small/luci-app-taskplan/luci-app-taskplan/root/usr/share/luci/menu.d/luci-app-taskplan.json
 
 [ -f package/base-files/files/etc/passwd ] && sed -i 's#root:/bin/ash#root:/bin/bash#g' package/base-files/files/etc/passwd
 
