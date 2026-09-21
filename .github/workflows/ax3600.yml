@@ -77,8 +77,9 @@ jobs:
       - name: 克隆源码 — ImmortalWrt
         if: ${{ env.TARGET == 'immortalwrt' }}
         env:
-          REPO_URL: https://github.com/immortalwrt/immortalwrt
-          REPO_BRANCH: master
+          #REPO_URL: https://github.com/immortalwrt/immortalwrt
+          REPO_URL: https://github.com/VIKINGYFY/immortalwrt
+          REPO_BRANCH: main
         run: |
           df -hT $PWD
           git clone $REPO_URL -b $REPO_BRANCH openwrt
