@@ -205,10 +205,17 @@ jobs:
         id: organize
         if: steps.compile.outputs.status == 'success' && env.UPLOAD_FIRMWARE == 'true' && !cancelled()
         run: |
-          cd openwrt/bin/targets/*/*
-          rm -rf packages
-          shopt -s globstar nullglob
-          echo "FIRMWARE=$PWD" >> $GITHUB_ENV
+          cd openwrt
+
+          rm -rf upload
+          mkdir -p upload
+
+          find ./bin/targets/ -type d -name packages -prune -exec rm -rf {} +
+
+          find ./bin/targets/ -type f \
+            -exec cp -f {} ./upload/ \;
+
+          echo "FIRMWARE=$PWD/upload" >> $GITHUB_ENV
           echo "status=success" >> $GITHUB_OUTPUT
 
       - name: 生成发布标签
@@ -216,9 +223,9 @@ jobs:
         if: steps.compile.outputs.status == 'success' && env.UPLOAD_RELEASE == 'true' && !cancelled()
         run: |
           echo "release_tag=$(date +'%Y.%m.%d_%H%M%S')" >> $GITHUB_OUTPUT
-          
-          # 转换发行版显示名称
+
           TARGET_ENV="${{ env.TARGET }}"
+
           if [ "$TARGET_ENV" = "openwrt" ]; then
             DISTRO_NAME="OpenWrt"
             PASSWORD_INFO="password"
@@ -226,15 +233,14 @@ jobs:
             DISTRO_NAME="ImmortalWrt"
             PASSWORD_INFO="无密码（首次直接按 Enter 登录）"
           fi
-          
-          # 写入发行说明文件
+
           printf '%s\n' \
-            "设备: ax3600 " \
+            "设备: ax3600" \
             "发行版: $DISTRO_NAME" \
             "编译时间: $(date +'%Y年%m月%d日')" \
             "用户名: root" \
             "密码: $PASSWORD_INFO" > release.txt
-          
+
           echo "status=success" >> $GITHUB_OUTPUT
 
       - name: 发布到 Releases
