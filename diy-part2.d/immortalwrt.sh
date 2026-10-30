@@ -46,4 +46,12 @@ rm -rf feeds/luci/luci-theme-argon
 
 
 #diy temp
-rm patches/feeds/app_airoha/luci-app-airoha-npu/root/usr/libexec/rpcd/100-offload-unsupported-xg2010g-2g.patch
+if [ "$ARCHITECTURE" = "xr1710g" ]; then
+    echo 'xr1710g diy part2 start...'
+    rm patches/feeds/app_airoha/luci-app-airoha-npu/root/usr/libexec/rpcd/100-offload-unsupported-xg2010g-2g.patch
+fi
+
+if [ "$ARCHITECTURE" = "xg2010g" ]; then
+    echo 'xg2010g diy part2 start...'
+    rm patches/feeds/app_airoha/luci-app-airoha-npu/root/usr/libexec/rpcd/100-offload-unsupported-xg2010g-2g.patch
+fi
