@@ -18,11 +18,12 @@ rm -rf package/lucky \
 
 
 if [ "$ARCHITECTURE" = "xr1710g" ]; then
-    echo ''
-    #rm -rf package/luci-app-airoha-npu
-    #cp -a "$GITHUB_WORKSPACE/apps/luci-app-airoha-npu" package/luci-app-airoha-npu
+    sed -i '/pushbot/d' feeds.conf.default
 fi
 
+if [ "$ARCHITECTURE" = "xg2010g" ]; then
+    sed -i '/pushbot/d' feeds.conf.default
+fi
 
 
 mkdir package/small
