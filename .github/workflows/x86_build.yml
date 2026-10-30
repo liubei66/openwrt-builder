@@ -147,12 +147,6 @@ jobs:
           cp feeds.d/immortalwrt openwrt/feeds.conf
 
 
-      - name: 🔄 更新 feeds
-        run: |
-          cd openwrt
-          ./scripts/feeds update -a
-
-
       - name: 🛠️ DIY part1
         run: |
           chmod +x scripts/*.sh
@@ -161,6 +155,10 @@ jobs:
 
           "$GITHUB_WORKSPACE/scripts/diy-part1.sh"
 
+      - name: 🔄 更新 feeds
+        run: |
+          cd openwrt
+          ./scripts/feeds update -a
 
       - name: 📥 安装 feeds
         run: |
