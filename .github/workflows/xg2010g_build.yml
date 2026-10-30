@@ -184,7 +184,7 @@ jobs:
           
           # 写入发行说明文件
           printf '%s\n' \
-            "设备: XR1710G (Airoha AN7581)" \
+            "设备: XG2010G (Airoha AN7581)" \
             "发行版: $DISTRO_NAME" \
             "编译时间: $(date +'%Y年%m月%d日')" \
             "用户名: root" \
