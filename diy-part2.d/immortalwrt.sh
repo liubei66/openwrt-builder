@@ -58,13 +58,7 @@ fi
 
 
 if [ "$ARCHITECTURE" = "x86_64" ]; then
-  LIBFFI_COMMIT="3611e5dc4e62ecf45f824c0db850a92ac9aa932b"
-  TARGET_DIR="package/libs/libffi"
-  rm -rf "$TARGET_DIR"
-  mkdir -p "$TARGET_DIR"
-  curl -L "https://github.com/openwrt/packages/archive/$LIBFFI_COMMIT.tar.gz" | tar -xz -C /tmp
-  mv "/tmp/packages-$LIBFFI_COMMIT/libs/libffi" "$TARGET_DIR"
-  rm -rf "/tmp/packages-$LIBFFI_COMMIT"
+    echo ''
 fi
 
 
