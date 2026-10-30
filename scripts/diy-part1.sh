@@ -18,10 +18,12 @@ rm -rf package/lucky \
 
 
 if [ "$ARCHITECTURE" = "xr1710g" ]; then
+    echo 'xr1710g diy start...'
     sed -i '/pushbot/d' feeds.conf.default
 fi
 
 if [ "$ARCHITECTURE" = "xg2010g" ]; then
+    echo 'xg2010g diy start...'
     sed -i '/pushbot/d' feeds.conf.default
 fi
 
