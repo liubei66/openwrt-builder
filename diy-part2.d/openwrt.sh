@@ -4,7 +4,6 @@
 
 # 删除feeds中的插件
 rm -rf package/lucky \
-       package/feeds/luci/luci-mod-system \
        feeds/luci/luci-theme-argon \
        package/feeds/packages/net/{geoview,chinadns-ng,hysteria,mosdns,v2ray-geodata,lucky,shadowsocks-libev,shadowsocks-rust,shadowsocksr-libev,sing-box,v2ray-plugin,xray-core,smartdns,dae,daed} \
        package/feeds/luci/applications/{luci-app-passwall,luci-app-passwall2,luci-app-openclash,luci-app-homeproxy,luci-app-lucky,luci-app-smartdns,luci-app-timecontrol,luci-app-mosdns,luci-app-nikki,luci-app-momo,luci-app-daed,luci-app-dae,luci-theme-argon}
