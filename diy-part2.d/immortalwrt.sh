@@ -44,3 +44,7 @@ rm -rf feeds/luci/luci-theme-argon
 [ -d package/base-files/files/etc/profile.d ] && cp "$GITHUB_WORKSPACE/diy-part2.d/.diy/30-sysinfo.sh" package/base-files/files/etc/profile.d/
 
 [ -d package/base-files/files/etc ] && cp "$GITHUB_WORKSPACE/diy-part2.d/.diy/banner" package/base-files/files/etc/banner
+
+
+#diy temp
+rm patches/feeds/app_airoha/luci-app-airoha-npu/root/usr/libexec/rpcd/100-offload-unsupported-xg2010g-2g.patch
