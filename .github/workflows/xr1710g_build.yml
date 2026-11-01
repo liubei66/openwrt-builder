@@ -27,7 +27,7 @@ on:
         options:
           - openwrt
           - immortalwrt
-        default: openwrt
+        default: immortalwrt
 
 env:
   ARCHITECTURE: xr1710g
