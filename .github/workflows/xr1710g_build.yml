@@ -77,8 +77,7 @@ jobs:
       - name: 克隆源码 — ImmortalWrt
         if: ${{ env.WRT_TARGET == 'immortalwrt' }}
         env:
-          #REPO_URL: https://github.com/chienkuo/ImmortalWrt-for-Gemtek-XR1710G
-          REPO_URL: https://github.com/naoki66/ImmortalWrt-for-Gemtek-brightspeed
+          REPO_URL: https://github.com/liubei66/ImmortalWrt-for-Gemtek-brightspeed
           REPO_BRANCH: master
         run: |
           df -hT $PWD
