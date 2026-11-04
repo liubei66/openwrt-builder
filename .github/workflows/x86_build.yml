@@ -117,8 +117,8 @@ jobs:
       - name: 📦 克隆源码 — OpenWrt
         if: ${{ env.WRT_TARGET == 'openwrt' }}
         env:
-          REPO_URL: https://github.com/Lienol/openwrt
-          REPO_BRANCH: 25.12
+          REPO_URL: https://github.com/coolsnowwolf/lede
+          REPO_BRANCH: master
         run: |
           git clone "$REPO_URL" -b "$REPO_BRANCH" openwrt
 
