@@ -5,6 +5,8 @@ permissions:
   actions: write
 
 on:
+  schedule:
+    - cron: '5 0 * * 6'
   repository_dispatch:
   workflow_dispatch:
     inputs:
@@ -19,7 +21,7 @@ on:
         options:
           - ap
           - common
-        default: ap
+        default: common
 
 
 env:
@@ -28,7 +30,7 @@ env:
   UPLOAD_FIRMWARE: true
   UPLOAD_RELEASE: true
   WRT_NAME: immortalwrt
-  IS_AP: ${{ (inputs.ap == 'ap') && 'ap' || 'common' }}
+  IS_AP: ${{ inputs.ap || 'common' }}
   TZ: Asia/Shanghai
   DIY_P2_DIR: diy-part2.d
 
@@ -57,7 +59,7 @@ jobs:
           # ⚠️ 谨记：Ubuntu 24.04 官方源在 sources.list.d/ 目录下，绝对不能删 sources.list.d/
           # 只清理不必要的巨大软体包腾空间即可
           sudo rm -rf /usr/share/dotnet /etc/mysql /etc/php /usr/local/lib/android /opt/ghc /usr/local/share/powershell
-          
+
           sudo -E apt-get -qq update
           # 过滤空行并安装依赖
           cat $GITHUB_WORKSPACE/depends/ubuntu-24.04 | grep -v '^#' | xargs sudo -E apt-get -y --no-install-recommends install
@@ -68,12 +70,11 @@ jobs:
 
       - name: 克隆源码
         env:
-          REPO_URL: https://github.com/naoki66/ImmortalWrt-for-Gemtek-brightspeed
+          REPO_URL: https://github.com/liubei66/ImmortalWrt-for-Gemtek-brightspeed
           REPO_BRANCH: master
         run: |
           df -hT $PWD
           git clone $REPO_URL -b $REPO_BRANCH openwrt
-          #cd openwrt && git switch --detach 20161010-9edfa9e && cd ..
           chmod -R +x openwrt/
           ln -sf /workdir/openwrt $GITHUB_WORKSPACE/openwrt
 
@@ -96,7 +97,7 @@ jobs:
 
       - name: 更新 feeds
         run: cd openwrt && ./scripts/feeds update -a
-        
+
       - name: 安装 feeds
         run: cd openwrt && ./scripts/feeds install -a
 
@@ -178,10 +179,10 @@ jobs:
         if: steps.compile.outputs.status == 'success' && env.UPLOAD_RELEASE == 'true' && !cancelled()
         run: |
           echo "release_tag=$(date +'%Y.%m.%d_%H%M%S')" >> $GITHUB_OUTPUT
-          
+
           DISTRO_NAME="ImmortalWrt"
           PASSWORD_INFO="无密码（首次直接按 Enter 登录）"
-          
+
           # 写入发行说明文件
           printf '%s\n' \
             "设备: XG2010G (Airoha AN7581)" \
@@ -189,7 +190,7 @@ jobs:
             "编译时间: $(date +'%Y年%m月%d日')" \
             "用户名: root" \
             "密码: $PASSWORD_INFO" > release.txt
-          
+
           echo "status=success" >> $GITHUB_OUTPUT
 
       - name: 发布到 Releases
@@ -217,3 +218,4 @@ jobs:
             grep "^${{ env.WRT_NAME }}_" | \
             tail -n +30 | \
             xargs -I {} gh release delete {} --yes --cleanup-tag || true
+

@@ -5,6 +5,8 @@ permissions:
   actions: write
 
 on:
+  schedule:
+    - cron: '2 0 * * 6'
   repository_dispatch:
   workflow_dispatch:
     inputs:
@@ -34,11 +36,11 @@ env:
   UPLOAD_BIN_DIR: false
   UPLOAD_FIRMWARE: true
   UPLOAD_RELEASE: true
-  WRT_NAME: ${{ (inputs.target == 'openwrt') && 'OpenWrt' || 'ImmortalWrt' }}
-  IS_AP: ${{ (inputs.ap == 'ap') && 'ap' || 'common' }}
+  WRT_TARGET: ${{ github.event.inputs.wrt_target || 'immortalwrt' }}
+  WRT_NAME: ${{ env.WRT_TARGET == 'openwrt' && 'OpenWrt' || 'ImmortalWrt' }}
+  IS_AP: ${{ github.event.inputs.ap || 'ap' }}
   TZ: Asia/Shanghai
   DIY_P2_DIR: diy-part2.d
-  WRT_TARGET: ${{ github.event.inputs.wrt_target }}
 
 jobs:
   build:
@@ -62,17 +64,12 @@ jobs:
           DEBIAN_FRONTEND: noninteractive
           TZ: Asia/Shanghai
         run: |
-          # ⚠️ 谨记：Ubuntu 24.04 官方源在 sources.list.d/ 目录下，绝对不能删 sources.list.d/
-          # 只清理不必要的巨大软体包腾空间即可
           sudo rm -rf /usr/share/dotnet /etc/mysql /etc/php /usr/local/lib/android /opt/ghc /usr/local/share/powershell
-          
           sudo -E apt-get -qq update
-          # 过滤空行并安装依赖
           cat $GITHUB_WORKSPACE/depends/ubuntu-24.04 | grep -v '^#' | xargs sudo -E apt-get -y --no-install-recommends install
           sudo timedatectl set-timezone "$TZ"
           sudo mkdir -p /workdir
           sudo chown $USER:$GROUPS /workdir
-
 
       - name: 克隆源码 — ImmortalWrt
         if: ${{ env.WRT_TARGET == 'immortalwrt' }}
@@ -82,7 +79,6 @@ jobs:
         run: |
           df -hT $PWD
           git clone $REPO_URL -b $REPO_BRANCH openwrt
-          #cd openwrt && git switch --detach 20260831-2c99fd68fc && cd ..
           chmod -R +x openwrt/
           ln -sf /workdir/openwrt $GITHUB_WORKSPACE/openwrt
 
@@ -128,27 +124,24 @@ jobs:
         run: cp configs/openwrt.config openwrt/.config
 
       - name: 加载common配置 — ImmortalWrt
-        if: ${{ env.WRT_TARGET == 'immortalwrt' && env.IS_AP == 'common'}}
+        if: ${{ env.WRT_TARGET == 'immortalwrt' && env.IS_AP == 'common' }}
         run: cp configs/immortalwrt.config openwrt/.config
 
       - name: 加载ap配置 — ImmortalWrt
-        if: ${{ env.WRT_TARGET == 'immortalwrt' && env.IS_AP == 'ap'}}
+        if: ${{ env.WRT_TARGET == 'immortalwrt' && env.IS_AP == 'ap' }}
         run: cp configs/immortalwrt_ap.config openwrt/.config
 
       - name: DIY part2 — OpenWrt
         if: ${{ env.WRT_TARGET == 'openwrt' }}
         run: |
-          # 1. 赋予 apps/ 目录下所有文件可执行权限
           if [ -d "apps" ]; then
             chmod -R +x apps/
-            # 2. 只有当 apps/ 目录下有内容时才进行复制
             if [ -n "$(ls -A apps/ 2>/dev/null)" ]; then
               cp -a apps/. openwrt/package/
               echo "=== 已成功复制 apps/ 内容到 openwrt/package/ ==="
             fi
           fi
           ls -la openwrt/package/
-          
           chmod +x "$DIY_P2_DIR/openwrt.sh"
           cd openwrt && "$GITHUB_WORKSPACE/$DIY_P2_DIR/openwrt.sh"
 
@@ -184,7 +177,6 @@ jobs:
             yes "" | make oldconfig
           fi
           make -j$(nproc) || make -j1 || make -j1 V=s
-          # 去掉了 %H%M，仅保留年月日
           echo "FILE_DATE=_$(date +'%Y%m%d')" >> $GITHUB_ENV
           echo "COMPILED=true" >> $GITHUB_ENV
           echo "status=success" >> $GITHUB_OUTPUT
@@ -205,15 +197,10 @@ jobs:
         if: steps.compile.outputs.status == 'success' && env.UPLOAD_FIRMWARE == 'true' && !cancelled()
         run: |
           cd openwrt
-
           rm -rf upload
           mkdir -p upload
-
           find ./bin/targets/ -type d -name packages -prune -exec rm -rf {} +
-
-          find ./bin/targets/ -type f \
-            -exec cp -f {} ./upload/ \;
-
+          find ./bin/targets/ -type f -exec cp -f {} ./upload/ \;
           echo "FIRMWARE=$PWD/upload" >> $GITHUB_ENV
           echo "status=success" >> $GITHUB_OUTPUT
 
@@ -222,8 +209,6 @@ jobs:
         if: steps.compile.outputs.status == 'success' && env.UPLOAD_RELEASE == 'true' && !cancelled()
         run: |
           echo "release_tag=$(date +'%Y.%m.%d_%H%M%S')" >> $GITHUB_OUTPUT
-          
-          # 转换发行版显示名称
           TARGET_ENV="${{ env.WRT_TARGET }}"
           if [ "$TARGET_ENV" = "openwrt" ]; then
             DISTRO_NAME="OpenWrt"
@@ -232,15 +217,12 @@ jobs:
             DISTRO_NAME="ImmortalWrt"
             PASSWORD_INFO="无密码（首次直接按 Enter 登录）"
           fi
-          
-          # 写入发行说明文件
           printf '%s\n' \
             "设备: XR1710G (Airoha AN7581)" \
             "发行版: $DISTRO_NAME" \
             "编译时间: $(date +'%Y年%m月%d日')" \
             "用户名: root" \
             "密码: $PASSWORD_INFO" > release.txt
-          
           echo "status=success" >> $GITHUB_OUTPUT
 
       - name: 发布到 Releases
@@ -256,7 +238,7 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          gh run list --workflow="Build Airoha_an7581-Wrt" --limit 30 --json databaseId --jq '.[].databaseId' | \
+          gh run list --workflow="Build Airoha_xr1710g-Wrt" --limit 30 --json databaseId --jq '.[].databaseId' | \
             tail -n +2 | xargs -I {} gh run delete {} --yes || true
 
       - name: 清理旧 Release
@@ -268,3 +250,4 @@ jobs:
             grep "^${{ env.WRT_TARGET }}_" | \
             tail -n +30 | \
             xargs -I {} gh release delete {} --yes --cleanup-tag || true
+
